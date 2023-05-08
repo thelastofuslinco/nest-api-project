@@ -8,7 +8,7 @@ import {
   Delete,
   Query,
 } from '@nestjs/common';
-import { Task as TaskModel, Prisma } from '@prisma/client';
+import { Task as TaskModel } from '@prisma/client';
 import { TaskService } from './task.service';
 
 @Controller()
@@ -31,25 +31,29 @@ export class TaskController {
     @Body()
     postData: {
       description: string;
-      owner_id: Prisma.UserCreateNestedOneWithoutTasksInput;
+      userId: string;
     },
   ): Promise<TaskModel> {
-    const { description, owner_id } = postData;
+    const { description, userId } = postData;
     return this.taskService.createTask({
       description,
       status: 'Requested',
-      owner: owner_id,
+      owner: { connect: { id: userId } },
     });
   }
 
   @Put('task/:id')
   async updateTask(
     @Param('id') id: string,
-    @Query('status') status: string,
+    @Body()
+    data: {
+      status: string;
+      description: string;
+    },
   ): Promise<TaskModel> {
     return this.taskService.updateTask({
       where: { id },
-      data: { status },
+      data: { ...data },
     });
   }
 
