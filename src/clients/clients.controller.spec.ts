@@ -1,22 +1,30 @@
-import { Test, TestingModule } from '@nestjs/testing';
 import { ClientsService } from './clients.service';
 import { ClientsControler } from './clients.controler';
+import { Client } from './clients.interface';
+import { TestingModuleHelper } from '../helpers/index';
 
 describe('AppController', () => {
   let clientsControler: ClientsControler;
 
   beforeEach(async () => {
-    const app: TestingModule = await Test.createTestingModule({
-      controllers: [ClientsControler],
-      providers: [ClientsService],
-    }).compile();
-
-    clientsControler = app.get<ClientsControler>(ClientsControler);
+    const { get } = new TestingModuleHelper<ClientsControler>();
+    clientsControler = await get(ClientsControler, ClientsService);
   });
 
-  describe('root', () => {
-    it('should return "Hello World!"', () => {
-      expect(clientsControler.getHello()).toBe('Hello World!');
-    });
+  it('Should return a client', () => {
+    const client: Client = {
+      id: 'any_id',
+      name: 'any_name',
+      email: 'any_email',
+      phone: 'any_phone',
+      age: 'any_age',
+      gender: 'any_gender',
+    };
+
+    expect(clientsControler.findOneClient('1')).toEqual(client);
+  });
+
+  it('Should return 10 clients', () => {
+    expect(clientsControler.getClients().length).toBe(10);
   });
 });

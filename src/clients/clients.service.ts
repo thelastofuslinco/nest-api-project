@@ -14,4 +14,18 @@ export class ClientsService {
     };
     return Array.from({ length: 10 }, (_, i) => i + 1).map(() => client);
   }
+
+  findOneClient(id: string): Client {
+    const client: Client = {
+      id: 'any_id',
+      name: 'any_name',
+      email: 'any_email',
+      phone: 'any_phone',
+      age: 'any_age',
+      gender: 'any_gender',
+    };
+    return Array.from({ length: 10 }, (_, i) => client).find(
+      (v, i) => id === i.toString(),
+    );
+  }
 }
