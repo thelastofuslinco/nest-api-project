@@ -5,7 +5,6 @@ import {
   Body,
   Get,
   Delete,
-  Query,
   Param,
 } from '@nestjs/common';
 import { UserService } from './user.service';
@@ -16,9 +15,7 @@ export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @Get('user')
-  async getUsers(
-    @Query('professional') professionalQuery: boolean = null,
-  ): Promise<UserModel[]> {
+  async getUsers(): Promise<UserModel[]> {
     return this.userService.users({
       where: {},
     });
