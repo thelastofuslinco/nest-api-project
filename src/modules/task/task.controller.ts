@@ -8,17 +8,21 @@ import {
   Delete,
   Query,
 } from '@nestjs/common';
-import { Task as TaskModel, Prisma } from '@prisma/client';
-import { TaskService } from './tasks.service';
+import { Task as TaskModel } from '@prisma/client';
+import { TaskService } from './task.service';
 
 @Controller()
 export class TaskController {
   constructor(private readonly taskService: TaskService) {}
   @Get('task')
-  async getTasks(@Query('status') status: string): Promise<TaskModel[]> {
-    return this.taskService.tasks({
-      where: { status },
-    });
+  async getTasks(@Query('user_id') user_id: string): Promise<TaskModel[]> {
+    if (user_id) {
+      return this.taskService.tasks({
+        where: { user_id },
+      });
+    }
+
+    return [];
   }
 
   @Get('task/:id')
@@ -31,25 +35,29 @@ export class TaskController {
     @Body()
     postData: {
       description: string;
-      owner_id: Prisma.UserCreateNestedOneWithoutTasksInput;
+      userId: string;
     },
   ): Promise<TaskModel> {
-    const { description, owner_id } = postData;
+    const { description, userId } = postData;
     return this.taskService.createTask({
       description,
       status: 'Requested',
-      owner: owner_id,
+      owner: { connect: { id: userId } },
     });
   }
 
   @Put('task/:id')
   async updateTask(
     @Param('id') id: string,
-    @Query('status') status: string,
+    @Body()
+    data: {
+      status: string;
+      description: string;
+    },
   ): Promise<TaskModel> {
     return this.taskService.updateTask({
       where: { id },
-      data: { status },
+      data: { ...data },
     });
   }
 
