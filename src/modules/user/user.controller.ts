@@ -6,6 +6,7 @@ import {
   Get,
   Delete,
   Param,
+  Query,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { User as UserModel } from '@prisma/client';
@@ -15,8 +16,12 @@ export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @Get('user')
-  async getUsers(): Promise<UserModel[]> {
-    return this.userService.users({});
+  async getUsers(
+    @Query('professional') professional: string,
+  ): Promise<UserModel[]> {
+    return this.userService.users({
+      where: { professional: JSON.parse(professional) },
+    });
   }
 
   @Get('user/:id')
