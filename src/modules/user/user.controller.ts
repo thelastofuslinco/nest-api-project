@@ -16,9 +16,7 @@ export class UserController {
 
   @Get('user')
   async getUsers(): Promise<UserModel[]> {
-    return this.userService.users({
-      where: {},
-    });
+    return this.userService.users({});
   }
 
   @Get('user/:id')

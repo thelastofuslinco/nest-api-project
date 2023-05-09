@@ -15,10 +15,14 @@ import { TaskService } from './task.service';
 export class TaskController {
   constructor(private readonly taskService: TaskService) {}
   @Get('task')
-  async getTasks(@Query('status') status: string): Promise<TaskModel[]> {
-    return this.taskService.tasks({
-      where: { status },
-    });
+  async getTasks(@Query('user_id') user_id: string): Promise<TaskModel[]> {
+    if (user_id) {
+      return this.taskService.tasks({
+        where: { user_id },
+      });
+    }
+
+    return [];
   }
 
   @Get('task/:id')
