@@ -35,14 +35,14 @@ export class TaskController {
     @Body()
     postData: {
       description: string;
-      userId: string;
+      user_id: string;
     },
   ): Promise<TaskModel> {
-    const { description, userId } = postData;
+    const { description, user_id } = postData;
     return this.taskService.createTask({
       description,
       status: 'Requested',
-      owner: { connect: { id: userId } },
+      owner: { connect: { id: user_id } },
     });
   }
 
